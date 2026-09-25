@@ -1,0 +1,1 @@
+window.COOKATLAS_CLOUD = { url: 'https://kibapognabmoommsybti.supabase.co', anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpYmFwb2duYWJtb29tbXN5YnRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMjk0OTAsImV4cCI6MjEwNTkwNTQ5MH0.DzoWy_NRdBc_SvI9VS2mOoPqu172QcURhEBKC3JHa9s' };
