@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CookAtlas — 500 Dishes from 50 Countries | What Should I Cook Today?</title>
+<meta name="description" content="CookAtlas: explore 500 research-based recipes from 50 countries. Search, browse by cuisine, scale servings, track steps, save favorites, or let Surprise Me decide what to cook.">
+<meta name="theme-color" content="#d9481f">
+<script>try{var __t=localStorage.getItem("cookatlas_theme");if(__t==="dark"||(!__t&&matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.dataset.theme="dark";}}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<header class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="#home"><span class="logo-globe">🌍</span><span>Cook<em>Atlas</em></span></a>
+    <nav class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#today">Today's pick</a>
+      <a href="#countries">Countries</a>
+      <a href="#explore">Explore</a>
+      <a href="#fridge">🧊 Fridge</a>
+      <a href="#surprise">Surprise Me</a>
+      <a href="#explore" id="navFav">❤ Favorites <b id="favCount">0</b></a>
+    </nav>
+    <div class="nav-search">
+      <span class="search-ico">🔍</span>
+      <input id="navSearch" type="search" placeholder="Search 500 dishes…" aria-label="Search dishes" autocomplete="off">
+    </div>
+    <button class="btn btn-small" id="authBtn">👤 Login</button>
+    <span class="user-chip" id="userChip" hidden>👋 <b id="userName"></b><button class="mini-btn" id="logoutBtn">Logout</button></span>
+    <button class="icon-btn" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+  </div>
+</header>
+
+<main id="home">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+    <div class="float-card fc1">🍣<div><b>Sushi</b><small>Japan</small></div></div>
+    <div class="float-card fc2">🌮<div><b>Tacos</b><small>Mexico</small></div></div>
+    <div class="float-card fc3">🍝<div><b>Pasta</b><small>Italy</small></div></div>
+    <div class="float-card fc4">🥘<div><b>Paella</b><small>Spain</small></div></div>
+    <div class="hero-content">
+      <p class="eyebrow">🌍 A world cookbook · 50 countries · 500 dishes</p>
+      <h1>Don't know <em>what to cook?</em><br>Start here.</h1>
+      <p class="lede">Every dish comes with its story, full ingredients, step-by-step guidance, pro tips and trusted web sources. Search a craving, browse a country — or hit <strong>Surprise Me</strong> and let dinner decide itself.</p>
+      <div class="hero-search">
+        <span class="search-ico">🔍</span>
+        <input id="heroSearch" type="search" placeholder="Try “dumplings”, “chocolate”, “spicy”…" autocomplete="off" aria-label="Search dishes" role="combobox" aria-controls="suggest" aria-expanded="false">
+        <button id="heroSearchBtn">Search</button>
+        <div class="suggest" id="suggest" hidden role="listbox" aria-label="Dish suggestions"></div>
+      </div>
+      <div class="quick-tags">Popular:
+        <button data-q="chicken">🍗 chicken</button>
+        <button data-q="chocolate">🍫 chocolate</button>
+        <button data-q="spicy">🌶️ spicy</button>
+        <button data-q="dumpling">🥟 dumplings</button>
+        <button data-q="cheese">🧀 cheese</button>
+      </div>
+      <div class="hero-ctas">
+        <a href="#explore" class="btn btn-primary">🔍 Explore all dishes</a>
+        <a href="#fridge" class="btn btn-ghost">🧊 What's in my fridge?</a>
+        <a href="#surprise" class="btn btn-ghost">🎲 Surprise me</a>
+      </div>
+      <div class="stats">
+        <div><b id="statDishes">500</b><span>dishes</span></div>
+        <div><b id="statCountries">50</b><span>countries</span></div>
+        <div><b id="statSources">1,500</b><span>web sources</span></div>
+        <div><b>100%</b><span>free forever</span></div>
+      </div>
+    </div>
+    <div class="ticker" aria-hidden="true"><div class="ticker-track" id="tickerTrack"></div></div>
+  </section>
+
+  <!-- DISH OF THE DAY -->
+  <section class="today" id="today">
+    <div class="wrap">
+      <div class="today-card reveal">
+        <div class="today-art" id="todayArt"><span id="todayEmoji">🍽️</span></div>
+        <div class="today-body">
+          <p class="kicker">⭐ Dish of the day · <span id="todayDate"></span></p>
+          <h2 id="todayTitle">…</h2>
+          <p class="today-cuisine" id="todayCuisine"></p>
+          <p id="todayAbout"></p>
+          <div class="badges" id="todayMeta"></div>
+          <div class="today-ctas">
+            <button class="btn btn-primary" id="todayOpen">Open full recipe →</button>
+            <button class="btn btn-ghost-dark" id="todayAlt">🎲 Surprise me instead</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRIDGE FINDER -->
+  <section class="fridge" id="fridge">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><p class="kicker">🧊 Fridge Finder</p><h2>What's in your fridge right now?</h2><p>Tell CookAtlas what you have — it ranks all 500 dishes by how much of them you already own. Pantry staples (salt, oil, water) count for free.</p></div>
+      </div>
+      <div class="fridge-panel reveal">
+        <div class="fridge-search">
+          <div class="fridge-chips" id="fridgeChips">
+            <input id="fridgeInput" type="text" placeholder="Add an ingredient — eggs, tomato, rice… (Enter or comma)" autocomplete="off" aria-label="Ingredients you have">
+            <div class="fridge-suggest" id="fridgeSuggest" hidden></div>
+          </div>
+          <select id="fridgeMax" aria-label="Maximum missing ingredients">
+            <option value="99" selected>Any missing count</option>
+            <option value="0">⚡ Cook right now!</option>
+            <option value="2">Missing at most 2</option>
+            <option value="4">Missing at most 4</option>
+            <option value="8">Missing at most 8</option>
+          </select>
+          <button class="btn btn-ghost-dark btn-small" id="fridgeClear">✕ Clear</button>
+        </div>
+        <p class="fridge-quick">Quick add: <span id="fridgeQuick">
+          <button type="button" class="qchip" data-ing="eggs">🥚 eggs</button><button type="button" class="qchip" data-ing="tomato">🍅 tomato</button><button type="button" class="qchip" data-ing="onion">🧅 onion</button><button type="button" class="qchip" data-ing="garlic">🧄 garlic</button><button type="button" class="qchip" data-ing="chicken">🍗 chicken</button><button type="button" class="qchip" data-ing="cheese">🧀 cheese</button><button type="button" class="qchip" data-ing="rice">🍚 rice</button><button type="button" class="qchip" data-ing="potato">🥔 potato</button><button type="button" class="qchip" data-ing="flour">🌾 flour</button><button type="button" class="qchip" data-ing="milk">🥛 milk</button>
+        </span></p>
+        <p class="fridge-info" id="fridgeInfo">Loading…</p>
+        <div class="fridge-grid" id="fridgeResults"></div>
+        <p class="fridge-more" id="fridgeMoreWrap" hidden><button type="button" class="btn btn-primary" id="fridgeMore">Show more</button></p>
+        <p class="fridge-note">Results computed instantly in your browser against the full 500-dish catalogue. Matching is fuzzy: plurals, word forms and common names (zucchini ⇄ courgette) are handled.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><p class="kicker">Get started</p><h2>How CookAtlas works</h2></div>
+      </div>
+      <div class="how-grid">
+        <div class="how-card reveal"><div class="how-ico">🔎</div><h3>1. Search or browse</h3><p>Type a craving or pick one of 50 country cuisines — from Italy to Japan to Ethiopia.</p></div>
+        <div class="how-card reveal"><div class="how-ico">📖</div><h3>2. Open a dish</h3><p>Get the story behind it, ingredients, preparation steps, serving tips and source links.</p></div>
+        <div class="how-card reveal"><div class="how-ico">🎲</div><h3>3. Can't decide?</h3><p>Hit <strong>Surprise Me</strong> for a random dish, or save favorites for your weekly plan.</p></div>
+        <div class="how-card reveal"><div class="how-ico">👩‍🍳</div><h3>4. Cook with it</h3><p>Scale servings up or down, check off steps as you go, and print the recipe for your kitchen.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTRIES -->
+  <section class="countries" id="countries">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><p class="kicker">50 cuisines · 10 dishes each</p><h2>🌐 Browse by country</h2><p>Click a country to filter the explorer. Badges show each cuisine's world rank.</p></div>
+        <button class="btn btn-small" id="clearCountry" hidden>✕ Clear filter</button>
+      </div>
+      <div class="country-grid" id="countryGrid"></div>
+    </div>
+  </section>
+
+  <!-- EXPLORER -->
+  <section class="explore" id="explore">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><p class="kicker">The collection</p><h2>🍽️ Dish explorer</h2><p id="resultInfo">Loading 500 dishes…</p></div>
+        <div class="explore-tools">
+          <select id="sortSel" aria-label="Sort dishes">
+            <option value="country">Sort: by country</option>
+            <option value="az">Sort: A → Z</option>
+          </select>
+          <button class="btn btn-small" id="favToggle" aria-pressed="false">❤ Favorites only</button>
+        </div>
+      </div>
+      <div class="chips reveal" id="regionChips" role="tablist" aria-label="Filter by region">
+        <button class="chip active" data-region="">🌍 All regions</button>
+        <button class="chip" data-region="Europe">🇪🇺 Europe <i>19</i></button>
+        <button class="chip" data-region="Asia">⛩️ Asia <i>9</i></button>
+        <button class="chip" data-region="Middle East">🕌 Middle East <i>7</i></button>
+        <button class="chip" data-region="Africa">🦁 Africa <i>6</i></button>
+        <button class="chip" data-region="Americas">🗽 Americas <i>9</i></button>
+      </div>
+      <div class="dish-grid" id="dishGrid">
+        <div class="skel-card"><div class="skel skel-art"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></div>
+        <div class="skel-card"><div class="skel skel-art"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></div>
+        <div class="skel-card"><div class="skel skel-art"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></div>
+        <div class="skel-card"><div class="skel skel-art"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></div>
+        <div class="skel-card"><div class="skel skel-art"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></div>
+        <div class="skel-card"><div class="skel skel-art"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></div>
+        <div class="skel-card"><div class="skel skel-art"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></div>
+        <div class="skel-card"><div class="skel skel-art"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></div>
+      </div>
+      <p class="end-note" id="endNote" hidden>🎉 You've browsed every dish in this view — time to cook!</p>
+      <div class="load-more-row"><button class="btn btn-primary" id="loadMore">Show more dishes</button></div>
+    </div>
+  </section>
+
+  <!-- TOP RATED -->
+  <section class="toprated" id="toprated">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><p class="kicker">Community results</p><h2>🏆 Top rated &amp; most loved</h2><p id="topInfo">Live rankings from registered cooks.</p></div>
+        <div class="explore-tools">
+          <button class="btn btn-small chip-toggle on" data-topby="rating">⭐ Top rated</button>
+          <button class="btn btn-small chip-toggle" data-topby="favorites">❤️ Most favorited</button>
+        </div>
+      </div>
+      <div class="top-list reveal" id="topList"><p class="muted">Loading rankings…</p></div>
+    </div>
+  </section>
+
+  <!-- SURPRISE -->
+  <section class="surprise" id="surprise">
+    <div class="wrap surprise-inner">
+      <div class="reveal">
+        <p class="kicker light">Decision-free cooking</p>
+        <h2>🎲 Don't know what to cook?</h2>
+        <p>One click. One random dish from somewhere on Earth. Full recipe included — no excuses left.</p>
+        <div class="surprise-btns">
+          <button class="btn btn-primary btn-big" id="surpriseBtn">🎲 Surprise me!</button>
+          <button class="btn btn-ghost" id="surpriseDirect">⚡ Just open one!</button>
+        </div>
+      </div>
+      <div class="surprise-card reveal" id="surpriseCard" aria-live="polite">
+        <div class="surprise-emoji">❓</div>
+        <p>Your mystery dish will appear here…</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT DATA -->
+  <section class="about-data">
+    <div class="wrap">
+      <div class="about-card reveal">
+        <div class="about-ico">📚</div>
+        <div>
+          <h2>About this collection</h2>
+          <p>Every dish in CookAtlas was individually researched on the web for authentic recipes and preparation guidance. Each entry includes <strong>About</strong> background, <strong>typical ingredients</strong>, <strong>step-by-step preparation</strong>, <strong>serving &amp; tips</strong> and <strong>source links</strong> so you can read further. Compiled from a Top-50 food-countries ranking (TasteAtlas 2025/26).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div class="foot-brand"><b>🌍 CookAtlas</b><p>500 dishes · 50 countries · one hungry planet. Free forever, no account needed.</p></div>
+    <div><b>Explore</b><p><a href="#today">Dish of the day</a><br><a href="#countries">Countries</a><br><a href="#explore">All dishes</a><br><a href="#surprise">Surprise me</a></p></div>
+    <div><b>Regions</b><p><a href="#explore">🇪🇺 Europe</a><br><a href="#explore">⛩️ Asia</a><br><a href="#explore">🕌 Middle East</a><br><a href="#explore">🦁 Africa · 🗽 Americas</a></p></div>
+    <div><b>👩‍🍳 Built with ❤️ by</b><p><a href="https://github.com/zilolaegamberganova" target="_blank" rel="noopener">Zilola Egamberganova</a> <span class="foot-gh">↗ @zilolaegamberganova</span><br><a href="https://github.com/xvviix" target="_blank" rel="noopener">xvviix</a> <span class="foot-gh">↗ @xvviix</span></p></div>
+  </div>
+  <div class="wrap foot-bottom"><span>© 2026 CookAtlas · Data: TasteAtlas 2025/26 Top-50</span><a href="#home">↑ Back to top</a></div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="modal-backdrop" id="authBackdrop" hidden>
+  <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <button class="modal-close" id="authClose" aria-label="Close">✕</button>
+    <h2 id="authTitle">👤 Join the kitchen</h2>
+    <p class="muted">Save favorites, rate dishes and join discussions.</p>
+    <div class="auth-tabs" role="tablist">
+      <button id="tabLoginBtn" class="on">Login</button>
+      <button id="tabRegisterBtn">Sign up</button>
+    </div>
+    <form id="loginForm" autocomplete="on">
+      <label>Username<input id="loginUser" required autocomplete="username"></label>
+      <label>Password<input id="loginPass" type="password" required autocomplete="current-password"></label>
+      <p class="auth-err" id="loginErr" hidden></p>
+      <button class="btn btn-primary" type="submit">Login</button>
+    </form>
+    <form id="registerForm" hidden autocomplete="on">
+      <label>Username<input id="regUser" required minlength="3" maxlength="30" autocomplete="username"></label>
+      <label>Email (optional)<input id="regEmail" type="email" autocomplete="email"></label>
+      <label>Password<input id="regPass" type="password" required minlength="8" autocomplete="new-password"></label>
+      <p class="auth-err" id="regErr" hidden></p>
+      <button class="btn btn-primary" type="submit">Create account</button>
+    </form>
+    <p class="hint">Your login token stays in this browser only.</p>
+  </div>
+</div>
+
+<!-- DISH MODAL -->
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="modal-hero" id="mHero">
+      <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+      <span class="m-emoji" id="mEmoji">🍽️</span>
+      <p class="m-cuisine" id="mCuisine"></p>
+      <h2 id="mTitle"></h2>
+    </div>
+    <div class="m-actions">
+      <button class="btn btn-small btn-fav" id="mFav">🤍 Save to favorites</button>
+      <span class="m-nav">
+        <button class="btn btn-small" id="mPrev">← Prev</button>
+        <button class="btn btn-small" id="mNext">Next →</button>
+        <button class="btn btn-small" id="mRandom">🎲 Random</button>
+        <button class="btn btn-small" id="mPrint">🖨️ Print</button>
+      </span>
+    </div>
+    <div class="m-tabs" role="tablist" aria-label="Recipe sections">
+      <button data-tab="about" class="on">📖 About</button>
+      <button data-tab="ing">🧂 Ingredients <b id="ingCount"></b></button>
+      <button data-tab="steps">👩‍🍳 Steps <b id="stepCount"></b></button>
+      <button data-tab="tips">💡 Tips &amp; sources</button>
+      <button data-tab="community">💬 Community <b id="commCount"></b></button>
+    </div>
+    <div class="modal-body">
+      <section class="m-tab" id="tabAbout">
+        <p id="mAbout"></p>
+        <div class="m-meta" id="mMeta"></div>
+      </section>
+      <section class="m-tab" id="tabIng" hidden>
+        <div class="scaler" id="scaleWrap">
+          <span class="scaler-label">Scale quantities:</span>
+          <button data-scale="0.5">½×</button>
+          <button data-scale="1" class="on">1×</button>
+          <button data-scale="2">2×</button>
+          <button data-scale="3">3×</button>
+          <button class="mini-btn" id="copyIng">📋 Copy list</button>
+        </div>
+        <p class="hint">Tap an ingredient to check it off while you shop or cook.</p>
+        <ul class="checklist" id="mIng"></ul>
+      </section>
+      <section class="m-tab" id="tabSteps" hidden>
+        <div class="step-progress"><div class="step-fill" id="stepFill"></div></div>
+        <p class="step-label" id="stepLabel"></p>
+        <ol class="step-list" id="mSteps"></ol>
+      </section>
+      <section class="m-tab" id="tabTips" hidden>
+        <ul class="tips" id="mTips"></ul>
+        <h4>📚 Read the original sources</h4>
+        <ul id="mSources" class="src-list"></ul>
+      </section>
+      <section class="m-tab" id="tabCommunity" hidden>
+        <div class="rate-box" id="commRate"></div>
+        <h4>💬 Discussion <span class="muted" id="commTotal"></span></h4>
+        <div class="comm-wall" id="commWall" hidden>
+          <p>👋 <b>Join the discussion!</b> Log in to rate this dish and post comments.</p>
+          <button class="btn btn-primary btn-small" id="commLoginBtn">👤 Login / Sign up</button>
+        </div>
+        <form class="comm-form" id="commForm" hidden>
+          <textarea id="commText" rows="2" maxlength="2000" placeholder="Tried it? Share your tips…"></textarea>
+          <button class="btn btn-primary btn-small" type="submit">Post comment</button>
+        </form>
+        <ul class="comm-list" id="commList"></ul>
+      </section>
+    </div>
+  </div>
+</div>
+
+<button class="to-top" id="toTop" aria-label="Back to top">↑</button>
+<div class="toast" id="toast" hidden></div>
+
+<script>window.COOKATLAS_STATIC = true;</script>
+<script src="./app.js"></script>
+<script src="./enhance.js"></script>
+<script src="./cloud-config.js"></script>
+<script src="./localdb.js"></script>
+<script src="./supa.js"></script>
+<script src="./community.js"></script>
+<script src="./fridge.js"></script>
+</body>
+</html>
