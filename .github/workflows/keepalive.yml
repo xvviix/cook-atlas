@@ -1,0 +1,30 @@
+name: Supabase keep-alive
+
+# Touches the database via PostgREST so the free project never sits idle for
+# 7 consecutive days (the Supabase auto-pause threshold). Public anon key only
+# — safe to keep in the repo. Fails loudly with a hint if the project is down.
+
+on:
+  schedule:
+    - cron: '17 6 * * *'   # daily 06:17 UTC
+  workflow_dispatch: {}
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake the database
+        env:
+          SB_URL: https://kibapognabmoommsybti.supabase.co
+          APIKEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpYmFwb2duYWJtb29tbXN5YnRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMjk0OTAsImV4cCI6MjEwNTkwNTQ5MH0.DzoWy_NRdBc_SvI9VS2mOoPqu172QcURhEBKC3JHa9s
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o resp.json -w '%{http_code}' "$SB_URL/rest/v1/profiles?select=id&limit=1" -H "apikey: $APIKEY")
+          echo "REST status: $code | body: $(cat resp.json | head -c 200)"
+          if [ "$code" != "200" ]; then
+            echo "::error::Supabase REST returned $code — the project may be paused/unreachable. Open the Supabase dashboard and click Restore."
+            exit 1
+          fi
+          echo "Database touched successfully - 7-day pause clock reset."
