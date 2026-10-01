@@ -371,5 +371,6 @@ const bootIv = setInterval(() => {
     countUp($("statSources"), DISHES.reduce((n, d) => n + d.sources.length, 0));
     buildTicker();
     dishOfDay();
+    try { const dm = /#dish:([\w.:-]+)/.exec(location.hash); if (dm) setTimeout(() => openModal(dm[1]), 350); } catch (e) {}
   } else if(bootTries > 150){ clearInterval(bootIv); }
 }, 100);
